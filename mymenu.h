@@ -1,8 +1,6 @@
 #pragma once
 
-#include <station.h>
-#include <pipe.h>
-
+#include <earl.h>
 
 namespace ITC {
 int menu();

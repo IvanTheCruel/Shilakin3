@@ -10,6 +10,7 @@
 namespace ITC {
     class pipe;
     class station;
+    class earl;
     std::string check_input(std::vector<std::string>, std::string);
     bool check_ans(std::string);
     double check_input(std::string);  //просим число double

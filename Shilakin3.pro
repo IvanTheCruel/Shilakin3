@@ -8,10 +8,12 @@ SOURCES += \
     pipe.cpp \
     station.cpp \
     check_input.cpp \
-    mymenu.cpp
+    mymenu.cpp \
+    earl.cpp
 
 HEADERS += \
     pipe.h \
     station.h \
     check_input.h \
-    mymenu.h
+    mymenu.h \
+    earl.h

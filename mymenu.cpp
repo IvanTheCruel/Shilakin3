@@ -44,9 +44,8 @@ bool ITC::fout(std::string address, std::map<size_t, pipe> &pipes, std::map<size
     ofstream fout;
     fout.open(address);
     if (fout.is_open()){
-        for (auto [k,v]: stations) fout << v;
-        for (auto [k,v]: pipes)    fout << v;
-
+        for (auto v: stations) fout << v.second;
+        for (auto v: pipes)    fout << v.second;
     } else {
         cout<<"ERROR:file isn't open!\n\n";
         fout.close();
