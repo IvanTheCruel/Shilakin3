@@ -35,8 +35,8 @@ bool checkByEffcy(const ITC::station &s, int effcy);
 template<typename T, typename Class>
 std::vector<size_t> FindByFilter(std::map<size_t,Class>& ps, filter<T,Class> f, T param){
     std::vector<size_t> ans;
-    for(auto [k,v]: ps){
-        if(f(v,param)) ans.emplace_back(k);
+    for(auto k: ps){
+        if(f(k.second,param)) ans.emplace_back(k.first);
     }
     return ans;
 }

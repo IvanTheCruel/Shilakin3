@@ -98,3 +98,19 @@ bool ITC::check_ans(std::string q){
 }
 
 
+
+size_t ITC::check_input_st_int(string name_element){
+    size_t input;
+    cout << "Enter a number of " << name_element << endl;
+    cin >> input;
+
+    while (cin.fail() || (input-size_t(input))){
+        cout << "ERROR: nubmer of elements has to be integer. Try again: " << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> input;
+    }
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    return (size_t)input;
+}

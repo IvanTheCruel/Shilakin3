@@ -5,6 +5,7 @@ using namespace ITC;
 int main(){
     map<size_t,pipe>    mpipes;
     map<size_t,station> mstations;
+    earl mearl;
     while(1){
         switch(menu()){
         case 0:
@@ -43,11 +44,12 @@ int main(){
             fout(check_input_str("name of file")+".itc", mpipes, mstations);
             break;
         case 9: //load
-            fin(check_input_str("name of file")+".itc", mpipes, mstations);
+            fin("base.itc", mpipes, mstations);
+            //fin(check_input_str("name of file")+".itc", mpipes, mstations);
             break;
         case 10: //delete pipe
         {
-            size_t id = check_input_int("ID");
+            size_t id = check_input_st_int("ID");
             if (mpipes.find(id) != mpipes.end()) {
                 mpipes.erase(id);
             } else {
@@ -56,12 +58,23 @@ int main(){
             break;
         }
         case 11: //delete station
-            size_t id = check_input_int("ID");
+        {
+            size_t id = check_input_st_int("ID");
             if (mstations.find(id) != mstations.end()) {
                 mstations.erase(id);
             } else {
                 cout << "ID not found\n";
             }
+            break;
+        }
+        case 12: //rebuild web
+            mearl.rebuild(mstations, mpipes);
+            break;
+        case 13: //view web
+            mearl.print();
+            break;
+        case 14: //edit web
+            mearl.set();
             break;
         }
     }
