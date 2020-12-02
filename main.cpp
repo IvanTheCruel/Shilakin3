@@ -76,6 +76,9 @@ int main(){
         case 14: //edit web
             mearl.set();
             break;
+        case 15: //edit web
+            mearl.topological_sort();
+            break;
         }
     }
 }
