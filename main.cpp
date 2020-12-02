@@ -5,7 +5,7 @@ using namespace ITC;
 int main(){
     map<size_t,pipe>    mpipes;
     map<size_t,station> mstations;
-    earl mearl;
+    web mearl;
     while(1){
         switch(menu()){
         case 0:
@@ -74,9 +74,9 @@ int main(){
             mearl.print();
             break;
         case 14: //edit web
-            mearl.set();
+            mearl.edit();
             break;
-        case 15: //edit web
+        case 15:
             mearl.topological_sort();
             break;
         }

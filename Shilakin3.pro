@@ -9,11 +9,11 @@ SOURCES += \
     station.cpp \
     check_input.cpp \
     mymenu.cpp \
-    earl.cpp
+    web.cpp
 
 HEADERS += \
     pipe.h \
     station.h \
     check_input.h \
     mymenu.h \
-    earl.h
+    web.h

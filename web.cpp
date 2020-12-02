@@ -1,19 +1,19 @@
-#include <earl.h>
-
+#include <web.h>
+//shared_ptr
+//две трубы на одном месте
+//diam 1m 1.4m
 using namespace std;
 
-earl::earl(){}
+web::web(){}
 
-
-
-bool earl::set(){
+bool web::edit(){
     size_t idr,idc;
     bool changed = false;
     print();
     while(ITC::check_ans("\nwant to (dis)connect stations?")){
         idr = ITC::check_input_st_int("row");
         idc = ITC::check_input_st_int("column");
-        if (key_map.find(idr) != key_map.end() && key_map.find(idc) != key_map.end()) {
+        if (key_map_id.find(idr) != key_map_id.end() && key_map_id.find(idc) != key_map_id.end()) {
             if (idr != idc) {
                 size_t id = ITC::check_input_st_int("id of pipe to connect with(-1 to disconnect)");
                 if (id == -1) detach(idr, idc);
@@ -22,15 +22,14 @@ bool earl::set(){
                     used_pipes[id] = true;
                     changed = true;
                 } else cout<<"pipe not found\n";
-            }
-            else cout<<"WARNING: station already connected to itself\n";
+            } else cout<<"WARNING: station already connected to itself\n";
         } else cout<<"not found\n";
         print();
     }
     return changed;
 }
 
-bool earl::detach(size_t r, size_t c){
+bool web::detach(size_t r, size_t c){
     int temp_id = adj_earl[make_pair(r,c)];
     if (temp_id != -1) {
         used_pipes[temp_id] = false;
@@ -40,16 +39,13 @@ bool earl::detach(size_t r, size_t c){
     return false;
 }
 
-bool earl::rebuild(const std::map<size_t, ITC::station> &stations, const std::map<size_t, ITC::pipe> &pipes){
+bool web::rebuild(const std::map<size_t, ITC::station> &stations, const std::map<size_t, ITC::pipe> &pipes){
     adj_earl.clear();
     int k = 0;
     for (auto i: stations){
-        key_map.insert({k++,i.first});
+        key_map_id.insert({k++,i.first});
         for (auto j: stations){
-//            if(i.first!=j.first)
             adj_earl.emplace(make_pair(i.first,j.first),-1);
-//            else
-//                adj_earl.emplace(make_pair(i.first,j.first),-2);
         }
     }
     k = 0;
@@ -57,20 +53,17 @@ bool earl::rebuild(const std::map<size_t, ITC::station> &stations, const std::ma
         used_pipes.insert(make_pair(i.first, false));
     }
 
-//    adj_earl[make_pair(0,1)]=1;
-//    adj_earl[make_pair(0,3)]=1;
-//    adj_earl[make_pair(1,3)]=1;
-    return (stations.empty()? false:true);
+    return !stations.empty();
 }
 
-void earl::print(){
+void web::print(){
     cout << "\t";
-    for (auto i: key_map) {
+    for (auto i: key_map_id) {
         cout << " " << i.second << " \t";
     }
-    for (auto r: key_map){
+    for (auto r: key_map_id){
         cout << "\n\n" << r.second << "\t";
-        for (auto c: key_map){
+        for (auto c: key_map_id){
             int temp = adj_earl[make_pair(r.second,c.second)];
             if (temp != -1)
                 cout << temp << "\t";
@@ -85,14 +78,14 @@ void earl::print(){
     cout << "\n";
 }
 
-bool earl::topological_sort(){
+bool web::topological_sort(){
     sort_ts.clear(); colours.clear(); visited.clear();
-    ts=0; vector<size_t> temp_key_map;
-    for (auto c: key_map){
+    vector<size_t> temp_key_map;
+    for (auto c: key_map_id){
         int temp=0;
         colours.emplace(c.second,1);
         visited.emplace(c.second,0);
-        for (auto r: key_map){
+        for (auto r: key_map_id){
             //Проверить столбец вершины(как в неё можно попасть)
             temp += (adj_earl[make_pair(r.second,c.second)]==-1? 0:1);
         }
@@ -100,28 +93,29 @@ bool earl::topological_sort(){
     }
     if(temp_key_map.size()!=0){
         for (auto v: temp_key_map) {
-            dfss(v);
+            dfs(v,key_map_id.size()+1);
         }
         cout << "\n";
         for (auto c: sort_ts)
             cout << "id" << c.first << "_" << c.second << "\n";
         return true;
     } else
-        cout<< "цикл\n";
+        cout<< "cycle\n";
     return false;
 }
 
-bool earl::dfss(size_t v){
+bool web::dfs(size_t v, size_t ts){
+    ts--;
     colours[v] = 2; //мы тут были
     visited[v]++;
     int temp;
-    for (auto c: key_map) { //куда можем попасть смотрим
+    for (auto c: key_map_id) { //куда можем попасть смотрим
         temp = adj_earl[make_pair(v,c.second)];
         if (temp != -1){ //ребро должно существовать чтобы попасть
             if (colours[c.second]!=3 && visited[c.second]!=2){ //цвет вершины не конец
                                                                //и не цикл
                 if (colours[c.second] == 1) {                  //если еще не были
-                    if (dfss(c.second)) return true;           //идем туда
+                    if (dfs(c.second, ts)) return true;           //идем туда
                 }
                 else { if (colours[c.second] == 2) return true; } //если были забили
             }
@@ -130,7 +124,7 @@ bool earl::dfss(size_t v){
         if (visited[v] == 2) return false; //были два раза
     }
     colours[v] = 3; //конечная
-    sort_ts.emplace(v,ts++);
+    sort_ts.emplace(v,ts);
     return false;
 }
 
