@@ -5,7 +5,7 @@ using namespace ITC;
 int main(){
     map<size_t,pipe>    mpipes;
     map<size_t,station> mstations;
-    web mearl;
+    web mweb;
     while(1){
         switch(menu()){
         case 0:
@@ -62,22 +62,23 @@ int main(){
             size_t id = check_input_st_int("ID");
             if (mstations.find(id) != mstations.end()) {
                 mstations.erase(id);
+                mweb.delete_st(id);
             } else {
                 cout << "ID not found\n";
             }
             break;
         }
         case 12: //rebuild web
-            mearl.rebuild(mstations, mpipes);
+            mweb.rebuild(mstations, mpipes);
             break;
         case 13: //view web
-            mearl.print();
+            mweb.print();
             break;
         case 14: //edit web
-            mearl.edit();
+            mweb.edit();
             break;
         case 15:
-            mearl.topological_sort();
+            mweb.topological_sort();
             break;
         }
     }

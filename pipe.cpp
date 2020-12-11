@@ -45,9 +45,6 @@ pipe::pipe(std::ifstream& ifs, int tid):id(tid){
 
 void pipe::change(){
     name = check_input_str("name of pipe('ctrl+z' to end input)");
-//    length=check_input("length");
-//    diameter=check_input_int("diameter"); //не редактируемы согласно указанию
-
     under_repair = check_ans("under repair?");
     return;
 }
