@@ -14,9 +14,9 @@ void web::edit(){
         idc = ITC::check_input_st_int("column");
         if (key_map_id.find(idr) != key_map_id.end() && key_map_id.find(idc) != key_map_id.end()) {
             if (idr != idc) {
-                size_t id = ITC::check_input_st_int("id of pipe to connect with(-1 to disconnect)");
-                if (id == -1) detach(idr, idc);
-                else tie_in(idr,idc,id);
+                int id = ITC::check_input_int("id of pipe to connect with(-1 to disconnect)");
+                if (id == -1) detach(idr,idc);
+                else          tie_in(idr,idc,id);
             } else cout<<"WARNING: station already connected to itself\n\n";
         } else cout<<"not found\n\n";
         print();
@@ -25,11 +25,10 @@ void web::edit(){
 }
 
 bool web::detach(size_t r, size_t c){
-    int temp_id = adj_web[make_pair(r,c)];
-    if (temp_id != -1) {
-        used_pipes[temp_id] = false;
+    int pipe_id = adj_web[make_pair(r,c)];
+    if (pipe_id != -1) {
+        used_pipes[pipe_id] = false;
         adj_web[make_pair(r,c)] = -1;
-        adj_true[make_pair(r,c)] = false;
         return true;
     } else cout << "cannot detach anything\n";
     return false;
@@ -37,26 +36,22 @@ bool web::detach(size_t r, size_t c){
 
 void web::tie_in(size_t idr, size_t idc, int id){
     if (used_pipes.find(id) != used_pipes.end()){
-        if(adj_true[make_pair(idr,idc)]==false){
+        if(adj_web[make_pair(idr,idc)]==-1){
             adj_web[make_pair(idr,idc)] = id;
-            adj_true[make_pair(idr,idc)]=true;
             used_pipes[id] = true;
         } else cout<<"WARNING: already connected\n\n";
     } else cout<<"WARNING: pipe not found\n\n";
 }
 
-bool web::rebuild(const std::map<size_t, ITC::station> &stations, const std::map<size_t, ITC::pipe> &pipes){
+bool web::rebuild(){
     adj_web.clear();
     for (auto i: stations){
         key_map_id.insert({i.first,i.first});
-        for (auto j: stations){
+        for (auto j: stations)
             adj_web.emplace(make_pair(i.first,j.first),-1);
-            adj_true.emplace(make_pair(i.first,j.first),false);
-        }
     }
-    for (auto i: pipes) {
+    for (auto i: pipes)
         used_pipes.insert(make_pair(i.first, false));
-    }
 
     return !stations.empty();
 }
@@ -109,6 +104,49 @@ bool web::topological_sort(){
     return false;
 }
 
+bool web::fout(string address){
+    ofstream fout;
+    fout.open(address);
+    if (fout.is_open()){
+        for (auto v: stations) fout << v.second;
+        for (auto v: pipes)    fout << v.second;
+    } else {
+        cout<<"ERROR:file isn't open!\n\n";
+        fout.close();
+        return false;
+    }
+    fout.close();
+    return true;
+}
+
+bool web::fin(string address){
+    ifstream fin(address);
+    if (fin.is_open()){
+        char t;
+        int tempid;
+        pipes.clear(); stations.clear();
+        ITC::pipe::kill_sId(); ITC::station::kill_sId();
+        fin >> t;
+        while(t != 'e'){
+            if (t=='S') {
+                fin >> tempid;
+                stations.insert({tempid,ITC::station(fin, tempid)});
+            } else if (t=='P') {
+                fin >> tempid;
+                pipes.insert({tempid,ITC::pipe(fin, tempid)});
+            }
+            fin >> t;
+        }
+        fin.close();
+    } else {
+        cout<<"ERROR:file isn't open!\n\n";
+        fin.close();
+        return false;
+    }
+    return true;
+}
+
+
 bool web::dfs(size_t v, size_t ts){
     ts--;
     colours[v] = 2; //мы тут были
@@ -133,17 +171,21 @@ bool web::dfs(size_t v, size_t ts){
     return false;
 }
 
-
-
-void web::delete_st(size_t id){
-    for (auto i: key_map_id) {
-        detach(i.second,id);
-        detach(id, i.second);
-        adj_web.erase(make_pair(i.second,id));
-        adj_web.erase(make_pair(id,i.second));
-        adj_true.erase(make_pair(i.second,id));
-        adj_true.erase(make_pair(id,i.second));
-    }
-    key_map_id.erase(id);
+void web::delete_st(){
+    size_t id = ITC::check_input_st_int("ID");
+    if (stations.find(id) != stations.end()) {
+        stations.erase(id);
+        for (auto i: key_map_id) {
+            detach(i.second,id);
+            detach(id, i.second);
+            adj_web.erase(make_pair(i.second,id));
+            adj_web.erase(make_pair(id,i.second));
+        }
+        key_map_id.erase(id);
+    } else cout << "ID not found\n";
 }
 
+
+void web::delete_pipe(){
+
+}
