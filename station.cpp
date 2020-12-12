@@ -2,7 +2,7 @@
 using namespace ITC;
 using namespace std;
 
-int station::sId = 0;
+size_t station::sId = 0;
 
 
 station::station():id(sId++){
@@ -31,7 +31,7 @@ station::station(bool change):station::station(){
     return;
 }
 
-station::station(std::ifstream& ifs, int tid):id(tid){
+station::station(std::ifstream& ifs, size_t tid):id(tid){
     string str;
 
     getline(ifs, str, '|');
@@ -52,11 +52,11 @@ station::station(std::ifstream& ifs, int tid):id(tid){
 }
 
 
-int station::get_id() const{
+size_t station::get_id() const{
     return id;
 }
 
-int station::get_max_id(){
+size_t station::get_max_id(){
     return station::sId;
 }
 

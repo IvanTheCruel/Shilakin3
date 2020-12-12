@@ -5,8 +5,8 @@
 class ITC::pipe
 {
 private:
-    static int sId;
-    int id;
+    static size_t sId;
+    size_t id;
 
 public:
     std::string name;
@@ -14,14 +14,14 @@ public:
     int diameter;
     bool under_repair = false;
 
-    int get_id() const;
-    static int get_max_id();
+    size_t get_id() const;
+    static size_t get_max_id();
     static void kill_sId();
     void change();
 
     pipe();
     pipe(bool);
-    pipe(std::ifstream&, int);
+    pipe(std::ifstream&, size_t);
     ~pipe();
 };
 

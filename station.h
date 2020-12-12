@@ -5,8 +5,8 @@
 class ITC::station
 {
 private:
-    static int sId;
-    int id;
+    static size_t sId;
+    size_t id;
 
 public:
     std::string name;
@@ -14,16 +14,16 @@ public:
     int quantity_in_work;
     int efficiency;
 
-    int get_id() const;
+    size_t get_id() const;
 
-    static int get_max_id();
+    static size_t get_max_id();
     static void kill_sId();
     void change();
 
 
     station();
     station(bool);
-    station(std::ifstream&, int);
+    station(std::ifstream&, size_t);
     ~station();
 };
 

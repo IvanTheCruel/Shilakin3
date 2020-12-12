@@ -10,35 +10,27 @@ int main(){
         case 0:
             return 0;
         case 1:
-            web.pipes.insert({pipe::get_max_id(),pipe()});
+            web.add_pipe(false);
             break;
         case 2:
-            web.stations.insert({station::get_max_id(),station()});
+            web.add_st(false);
             break;
         case 3: //see all
             for (auto v: web.pipes)    cout << v.second;
             for (auto v: web.stations) cout << v.second;
             break;
         case 4: //edit pipe
-        {
             if(!edit(web.pipes,check_input_int("ID"))) cout << "can't edit pipe\n";
             break;
-        }
         case 5: //edit station
-        {
             if(!edit(web.stations,check_input_int("ID"))) cout << "can't edit station\n";
             break;
-        }
         case 6: //select pipes
-        {
             if(!selectPipes(web.pipes)) cout<<"can't select any pipe\n";
             break;
-        }
         case 7: //select stations
-        {
             if(!selectStations(web.stations)) cout<<"can't select any station\n";
             break;
-        }
         case 8: //save
             web.fout(check_input_str("name of file")+".itc");
             break;
@@ -46,20 +38,13 @@ int main(){
             web.fin(check_input_str("name of file")+".itc");
             break;
         case 10: //delete pipe
-        {
-            size_t id = check_input_st_int("ID");
-            if (web.pipes.find(id) != web.pipes.end()) {
-                web.pipes.erase(id);
-            } else cout << "ID not found\n";
+            web.delete_pipe();
             break;
-        }
         case 11: //delete station
-        {
             web.delete_st();
             break;
-        }
-        case 12: //rebuild web
-            web.rebuild();
+        case 12:
+
             break;
         case 13: //view web
             web.print();

@@ -34,7 +34,7 @@ bool web::detach(size_t r, size_t c){
     return false;
 }
 
-void web::tie_in(size_t idr, size_t idc, int id){
+void web::tie_in(size_t idr, size_t idc, size_t id){
     if (used_pipes.find(id) != used_pipes.end()){
         if(adj_web[make_pair(idr,idc)]==-1){
             adj_web[make_pair(idr,idc)] = id;
@@ -43,10 +43,25 @@ void web::tie_in(size_t idr, size_t idc, int id){
     } else cout<<"WARNING: pipe not found\n\n";
 }
 
+void web::add_pipe(bool edit){
+    pipes.insert({ITC::pipe::get_max_id(),ITC::pipe(edit)});
+    used_pipes.insert({ITC::pipe::get_max_id()-1, false});
+}
+
+void web::add_st(bool edit){
+    size_t temp = ITC::station::get_max_id();
+    stations.insert({temp,ITC::station(edit)});
+    key_map_id.insert(temp);
+    for (auto i: key_map_id){
+        adj_web.emplace(make_pair(temp,i),-1);
+        if (temp!=i) adj_web.emplace(make_pair(i,temp),-1);
+    }
+}
+
 bool web::rebuild(){
     adj_web.clear();
     for (auto i: stations){
-        key_map_id.insert({i.first,i.first});
+        key_map_id.insert(i.first);
         for (auto j: stations)
             adj_web.emplace(make_pair(i.first,j.first),-1);
     }
@@ -110,6 +125,7 @@ bool web::fout(string address){
     if (fout.is_open()){
         for (auto v: stations) fout << v.second;
         for (auto v: pipes)    fout << v.second;
+        fout << *this;
     } else {
         cout<<"ERROR:file isn't open!\n\n";
         fout.close();
@@ -123,7 +139,7 @@ bool web::fin(string address){
     ifstream fin(address);
     if (fin.is_open()){
         char t;
-        int tempid;
+        size_t tempid;
         pipes.clear(); stations.clear();
         ITC::pipe::kill_sId(); ITC::station::kill_sId();
         fin >> t;
@@ -192,8 +208,25 @@ void web::delete_pipe(){
     size_t id = ITC::check_input_st_int("ID");
     if (pipes.find(id) != pipes.end()) {
         pipes.erase(id);
-
         if (used_pipes[id])
+            for (auto i: adj_web)
+                if (int(id) == i.second){
+                    i.second = -1;
+                    break;
+                }
         used_pipes.erase(id);
     } else cout << "ID not found\n";
+}
+
+ofstream &operator<<(ofstream & ofs, const web &web)
+{
+    string ans;
+    size_t k=0;
+    for (auto i: web.adj_web){
+        ans+=(k%web.key_map_id.size()==0?"A":"")+to_string(i.second)+"|"+((k+1)%web.key_map_id.size()==0?"\n":"");
+        k++;
+    }
+    ans+="end";
+    ofs << ans;
+    return ofs;
 }

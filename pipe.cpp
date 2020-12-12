@@ -2,7 +2,7 @@
 using namespace ITC;
 using namespace std;
 
-int pipe::sId = 0;
+size_t pipe::sId = 0;
 
 pipe::pipe():id(sId++){
     name="p"+to_string(id);
@@ -22,7 +22,7 @@ pipe::pipe(bool change):pipe::pipe(){
     }
 }
 
-pipe::pipe(std::ifstream& ifs, int tid):id(tid){
+pipe::pipe(std::ifstream& ifs, size_t tid):id(tid){
     using namespace std;
     string str;
 
@@ -50,11 +50,11 @@ void pipe::change(){
 }
 
 
-int pipe::get_id() const{
+size_t pipe::get_id() const{
     return id;
 }
 
-int pipe::get_max_id(){
+size_t pipe::get_max_id(){
     return pipe::sId;
 }
 
@@ -84,11 +84,6 @@ std::ofstream& operator<<(std::ofstream& ofs, const pipe& mypipe){
                 +to_string(mypipe.length)+"|"
                 +to_string(mypipe.diameter)+"|"
                 +(mypipe.under_repair? '1':'0')+"|\n";
-
-    if(mypipe.get_id()==mypipe.get_max_id()-1){
-        ans = ans+"end";
-    }
-
     ofs << ans;
     return ofs;
 }
