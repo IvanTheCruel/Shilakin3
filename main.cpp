@@ -3,7 +3,6 @@ using namespace std;
 using namespace ITC;
 
 int main(){
-
     web web;
     while(1){
         switch(menu()){

@@ -34,7 +34,7 @@ bool web::detach(size_t r, size_t c){
     return false;
 }
 
-void web::tie_in(size_t idr, size_t idc, size_t id){
+void web::tie_in(size_t idr, size_t idc, int id){
     if (used_pipes.find(id) != used_pipes.end()){
         if(adj_web[make_pair(idr,idc)]==-1){
             adj_web[make_pair(idr,idc)] = id;
@@ -143,13 +143,22 @@ bool web::fin(string address){
         pipes.clear(); stations.clear();
         ITC::pipe::kill_sId(); ITC::station::kill_sId();
         fin >> t;
-        while(t != 'e'){
+        while(t != 'A' && t != 'e'){
             if (t=='S') {
                 fin >> tempid;
                 stations.insert({tempid,ITC::station(fin, tempid)});
             } else if (t=='P') {
                 fin >> tempid;
                 pipes.insert({tempid,ITC::pipe(fin, tempid)});
+            }
+            fin >> t;
+        }
+        rebuild();
+        int id;
+        for (auto r: key_map_id){
+            for (auto c: key_map_id){
+                fin >> id;
+                if (id != -1) tie_in(r,c,id);
             }
             fin >> t;
         }
@@ -218,12 +227,11 @@ void web::delete_pipe(){
     } else cout << "ID not found\n";
 }
 
-ofstream &operator<<(ofstream & ofs, const web &web)
-{
+ofstream &operator<<(ofstream & ofs, const web &web){
     string ans;
     size_t k=0;
     for (auto i: web.adj_web){
-        ans+=(k%web.key_map_id.size()==0?"A":"")+to_string(i.second)+"|"+((k+1)%web.key_map_id.size()==0?"\n":"");
+        ans+=(k%web.key_map_id.size()==0?"A ":"")+to_string(i.second)+" "+((k+1)%web.key_map_id.size()==0?"\n":"");
         k++;
     }
     ans+="end";

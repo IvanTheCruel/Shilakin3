@@ -24,7 +24,7 @@ public:
     void edit(); //редактировать трубу
 
     bool detach(size_t r, size_t c);
-    void tie_in(size_t r, size_t c, size_t id);
+    void tie_in(size_t r, size_t c, int id);
 
     void add_pipe(bool edit);
     void add_st(bool edit);
