@@ -15,48 +15,6 @@ int ITC::menu(){
     return check_input_int("option:");
 }
 
-//bool ITC::fin(std::string address, std::map<size_t, pipe> &pipes, std::map<size_t, station> &stations){
-//    ifstream fin(address);
-//    if (fin.is_open()){
-//        char t;
-//        int tempid;
-//        pipes.clear(); stations.clear();
-//        ITC::pipe::kill_sId(); ITC::station::kill_sId();
-//        fin >> t;
-//        while(t != 'e'){
-//            if (t=='S') {
-//                fin >> tempid;
-//                stations.insert({tempid,station(fin, tempid)});
-//            } else if (t=='P') {
-//                fin >> tempid;
-//                pipes.insert({tempid,pipe(fin, tempid)});
-//            }
-//            fin >> t;
-//        }
-//    } else {
-//        cout<<"ERROR:file isn't open!\n\n";
-//        fin.close();
-//        return false;
-//    }
-//    fin.close();
-//    return true;
-//}
-
-//bool ITC::fout(std::string address, std::map<size_t, pipe> &pipes, std::map<size_t, station> &stations){
-//    ofstream fout;
-//    fout.open(address);
-//    if (fout.is_open()){
-//        for (auto v: stations) fout << v.second;
-//        for (auto v: pipes)    fout << v.second;
-//    } else {
-//        cout<<"ERROR:file isn't open!\n\n";
-//        fout.close();
-//        return false;
-//    }
-//    fout.close();
-//    return true;
-//}
-
 bool ITC::checkByStatus(const ITC::pipe &p, bool state){
     return p.under_repair == state;
 }
@@ -112,7 +70,6 @@ std::vector<size_t> ITC::filterSelectStations(std::map<size_t,station>& ps){
 
 
 bool ITC::selectPipes(std::map<size_t, pipe> &pipes){
-
     vector<size_t> find = filterSelectPipes(pipes);
     if (find.empty()) {
         cout << "Not found\n";
@@ -134,7 +91,6 @@ bool ITC::selectPipes(std::map<size_t, pipe> &pipes){
 }
 
 bool ITC::selectStations(std::map<size_t, station> &stations){
-
     vector<size_t> find = filterSelectStations(stations);
     if (find.empty()) {
         cout << "Not found\n";

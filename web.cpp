@@ -1,4 +1,4 @@
-#include <web.h>
+﻿#include <web.h>
 //shared_ptr
 //две трубы на одном месте
 //diam 1m 1.4m
@@ -59,12 +59,12 @@ bool web::rebuild(){
 void web::print(){
     cout << "\t";
     for (auto i: key_map_id) {
-        cout << " " << i.second << " \t";
+        cout << " " << i << " \t";
     }
     for (auto r: key_map_id){
-        cout << "\n\n" << r.second << "\t";
+        cout << "\n\n" << r << "\t";
         for (auto c: key_map_id){
-            int temp = adj_web[make_pair(r.second,c.second)];
+            int temp = adj_web[make_pair(r,c)];
             if (temp != -1)
                 cout << temp << "\t";
             else
@@ -83,13 +83,13 @@ bool web::topological_sort(){
     vector<size_t> temp_key_map;
     for (auto c: key_map_id){
         int temp=0;
-        colours.emplace(c.second,1);
-        visited.emplace(c.second,0);
+        colours.emplace(c,1);
+        visited.emplace(c,0);
         for (auto r: key_map_id){
             //Проверить столбец вершины(как в неё можно попасть)
-            temp += (adj_web[make_pair(r.second,c.second)]==-1? 0:1);
+            temp += (adj_web[make_pair(r,c)]==-1? 0:1);
         }
-        if (temp == 0) temp_key_map.push_back(c.second); //запомнить вершины корни
+        if (temp == 0) temp_key_map.push_back(c); //запомнить вершины корни
     }
     if(temp_key_map.size()!=0){
         for (auto v: temp_key_map) {
@@ -153,14 +153,14 @@ bool web::dfs(size_t v, size_t ts){
     visited[v]++;
     int temp;
     for (auto c: key_map_id) { //куда можем попасть смотрим
-        temp = adj_web[make_pair(v,c.second)];
+        temp = adj_web[make_pair(v,c)];
         if (temp != -1){ //ребро должно существовать чтобы попасть
-            if (colours[c.second]!=3 && visited[c.second]!=2){ //цвет вершины не конец
+            if (colours[c]!=3 && visited[c]!=2){ //цвет вершины не конец
                                                                //и не цикл
-                if (colours[c.second] == 1) {                  //если еще не были
-                    if (dfs(c.second, ts)) return true;           //идем туда
+                if (colours[c] == 1) {                  //если еще не были
+                    if (dfs(c, ts)) return true;           //идем туда
                 }
-                else { if (colours[c.second] == 2) return true; } //если были забили
+                else { if (colours[c] == 2) return true; } //если были забили
             }
         }
         if (colours[v] == 3) return false; //конечная
@@ -176,10 +176,12 @@ void web::delete_st(){
     if (stations.find(id) != stations.end()) {
         stations.erase(id);
         for (auto i: key_map_id) {
-            detach(i.second,id);
-            detach(id, i.second);
-            adj_web.erase(make_pair(i.second,id));
-            adj_web.erase(make_pair(id,i.second));
+            detach(i,id);
+            adj_web.erase(make_pair(i,id));
+            if (id!=i){
+                detach(id, i);
+                adj_web.erase(make_pair(id,i));
+            }
         }
         key_map_id.erase(id);
     } else cout << "ID not found\n";
@@ -187,5 +189,11 @@ void web::delete_st(){
 
 
 void web::delete_pipe(){
+    size_t id = ITC::check_input_st_int("ID");
+    if (pipes.find(id) != pipes.end()) {
+        pipes.erase(id);
 
+        if (used_pipes[id])
+        used_pipes.erase(id);
+    } else cout << "ID not found\n";
 }

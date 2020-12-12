@@ -2,13 +2,14 @@
 
 #include <station.h>
 #include <pipe.h>
-
+#include <set>
 
 
 class web { //граф
 private:
     std::map<std::pair<size_t,size_t>, int> adj_web;
-    std::map<size_t,size_t> key_map_id; //massid, idRC
+    //std::map<size_t,size_t> key_map_id; //massid, idRC
+    std::set<size_t> key_map_id;
     std::map<size_t,bool> used_pipes;
 
     std::map<size_t,size_t> sort_ts,colours, visited;
@@ -36,5 +37,4 @@ public:
 
     web();
 };
-
 
