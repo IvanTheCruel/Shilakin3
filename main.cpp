@@ -42,8 +42,8 @@ int main(){
         case 11: //delete station
             web.delete_st();
             break;
-        case 12:
-
+        case 12: //clean web
+            web.clean();
             break;
         case 13: //view web
             web.print();

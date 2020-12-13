@@ -60,6 +60,8 @@ void web::add_st(bool edit){
 
 bool web::rebuild(){
     adj_web.clear();
+    key_map_id.clear();
+    used_pipes.clear();
     for (auto i: stations){
         key_map_id.insert(i.first);
         for (auto j: stations)
@@ -67,7 +69,6 @@ bool web::rebuild(){
     }
     for (auto i: pipes)
         used_pipes.insert(make_pair(i.first, false));
-
     return !stations.empty();
 }
 
@@ -210,6 +211,10 @@ void web::delete_st(){
         }
         key_map_id.erase(id);
     } else cout << "ID not found\n";
+}
+
+void web::clean(){
+    for (auto v: adj_web) if(v.second!=-1) detach(v.first.first,v.first.second);
 }
 
 
